@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch with Record</title>
+  <style>
+    .container {
+      text-align: center;
+      margin-top: 100px;
+    }
+    .timer {
+      font-size: 30px;
+      border: 1px solid black;
+      padding: 10px;
+      display: inline-block;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    button {
+      border: 1px solid black;
+      padding: 5px 10px;
+      margin: 0 10px;
+      cursor: pointer;
+      background-color: #f0f0f0;
+    }
+    .lap-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="timer" id="timer">00:00:00</div>
+    <div class="controls">
+      <button onclick="startStop()">Start/Stop</button>
+      <button onclick="recordLap()">Record Lap</button>
+      <button onclick="reset()">Reset</button>
+    </div>
+    <ul class="lap-list" id="lapList"></ul>
+  </div>
+
+  <script>
+    let timer;
+    let isRunning = false;
+    let seconds = 0;
+    let minutes = 0;
+    let hours = 0;
+    let lapCounter = 1;
+
+    function startStop() {
+      if (isRunning) {
+        clearInterval(timer);
+        isRunning = false;
+      } else {
+        timer = setInterval(updateTimer, 1000);
+        isRunning = true;
+      }
+    }
+
+    function updateTimer() {
+      seconds++;
+      if (seconds === 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes === 60) {
+          minutes = 0;
+          hours++;
+        }
+      }
+      document.getElementById('timer').innerHTML = formatTime(hours) + ':' + formatTime(minutes) + ':' + formatTime(seconds);
+    }
+
+    function recordLap() {
+      const lapTime = document.getElementById('timer').innerHTML;
+      const lapList = document.getElementById('lapList');
+      const lapItem = document.createElement('li');
+      lapItem.textContent = 'Lap ' + lapCounter + ': ' + lapTime;
+      lapList.appendChild(lapItem);
+      lapCounter++;
+    }
+
+    function reset() {
+      clearInterval(timer);
+      isRunning = false;
+      seconds = 0;
+      minutes = 0;
+      hours = 0;
+      document.getElementById('timer').innerHTML = '00:00:00';
+      document.getElementById('lapList').innerHTML = '';
+      lapCounter = 1;
+    }
+
+    function formatTime(time) {
+      return (time < 10 ? '0' : '') + time;
+    }
+  </script>
+</body>
+</html>
